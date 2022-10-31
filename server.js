@@ -35,8 +35,6 @@ app.post("/imdb", (request, response) => {
 
     const data = request.body;
     const timestamp = Date.now();
-    // const dateRequested = new Date(timestamp).toDateString();
-    // data.dateRequested = dateRequested;
     data.timestamp = timestamp;
     database.insert(data);
   });
