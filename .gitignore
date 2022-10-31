@@ -1,0 +1,6 @@
+.glitchdotcom.json
+.node-gyp
+package-lock
+.env
+node_modules/
+database.db
