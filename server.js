@@ -2,6 +2,8 @@ const express = require("express");
 const Datastore = require("nedb");
 const requestify = require("requestify");
 
+
+// Request to imdb api
 const url = `https://caching.graphql.imdb.com/?operationName=comingSoonMovieQuery&variables=%7B%22movieReleasingOnOrAfter%22%3A%222022-10-26%22%2C%22movieViewerLocation%22%3A%7B%22latLong%22%3A%7B%22lat%22%3A%2245.63%22%2C%22long%22%3A%2225.58%22%7D%2C%22radiusInMeters%22%3A80467%7D%2C%22regionOverride%22%3A%22GB%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22sha256Hash%22%3A%2285a63f89df9b1368af9cbbd5a03ececaf2b34a175dd653119e1cd09c9cfda637%22%2C%22version%22%3A1%7D%7D`;
 const options = {
   headers: {
@@ -27,16 +29,16 @@ const users = new Datastore("users.db");
 users.loadDatabase();
 database.loadDatabase();
 
-app.post("/imdb", (request, response) => {
-  console.log("POST /IMDB from client side");
+app.get("/imdb", (request, response) => {
+  console.log("GET /IMDB from client side");
 
   requestify.get(url, options).then(function (res) {
     response.json(res.getBody());
 
-    const data = request.body;
-    const timestamp = Date.now();
-    data.timestamp = timestamp;
-    database.insert(data);
+    // const data = request.body;
+    // const timestamp = Date.now();
+    // data.timestamp = timestamp;
+    // database.insert(data);
   });
 });
 
@@ -130,7 +132,7 @@ app.post("/deleteItem", async (req, res) => {
   console.log("POST /deleteItem from client side");
   console.log(req.body);
   users.loadDatabase();
-  await users.find({ email: req.body.user }, async (err, data) => {
+  users.find({ email: req.body.user }, async (err, data) => {
     const favList = data[0].favList;
     const itemToDelete = favList.filter((el) => el.includes(req.body.delete));
     users.update(

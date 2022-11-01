@@ -1,18 +1,17 @@
-let lat, lon;
 
-console.log("LOCAL STORAGE:", localStorage);
-
-if ("geolocation" in navigator) {
-  console.log("geolocation available");
-  navigator.geolocation.getCurrentPosition(async (position) => {
-    lat = position.coords.latitude;
-    lon = position.coords.longitude;
-    // document.getElementById("latitude").textContent = lat;
-    // document.getElementById("longitude").textContent = lon;
-  });
-} else {
-  console.log("geolocation not available");
-}
+// if ("geolocation" in navigator) {
+//   console.log("geolocation available");
+//   navigator.geolocation.getCurrentPosition(async (position) => {
+//     lat = position.coords.latitude;
+//     lon = position.coords.longitude;
+//     coords.push(lat)
+//     coords.push(lon)
+//     // document.getElementById("latitude").textContent = lat;
+//     // document.getElementById("longitude").textContent = lon;
+//   });
+// } else {
+//   console.log("geolocation not available");
+// }
 
 $("#login").on("click", (event) => {
   $("#loginContainer").toggleClass("display");
@@ -29,13 +28,13 @@ const movieNo = $("#movieNo")[0];
 const getDataBtn = $("#data")[0];
 
 async function getImdbResponse() {
-  const data = { lat, lon };
+  // const data = { lat, lon };
   const options = {
-    method: "POST",
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    // body: JSON.stringify(data),
   };
   const response = await fetch("/imdb", options);
   const json = await response.json();
