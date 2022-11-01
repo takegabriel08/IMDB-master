@@ -159,6 +159,14 @@ async function register() {
       $("#success-container").toggleClass("show");
     }, 5000);
   }
+  if (json.status == 403) {
+    const error = $("#register-error");
+    error.toggleClass("show");
+    error[0].innerText = json.message;
+    setTimeout(() => {
+      error.toggleClass("show");
+    }, 5000);
+  }
 }
 $("#reg-submit").on("click", register);
 
