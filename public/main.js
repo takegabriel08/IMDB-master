@@ -13,12 +13,12 @@
 //   console.log("geolocation not available");
 // }
 
-$("#login").on("click", (event) => {
+$("#login").on("click", () => {
   $("#loginContainer").toggleClass("display");
   $("#registerContainer").removeClass("display");
 });
 
-$("#register").on("click", (event) => {
+$("#register").on("click", () => {
   $("#registerContainer").toggleClass("display");
   $("#loginContainer").removeClass("display");
 });
