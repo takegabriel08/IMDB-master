@@ -4,3 +4,4 @@ package-lock
 .env
 node_modules/
 database.db
+users.db
