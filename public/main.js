@@ -141,7 +141,7 @@ async function register() {
   const email = $("#reg-email")[0].value;
   const password = $("#reg-password")[0].value;
   const data = { name, email, password };
-  console.log("Register account data", data);
+  // console.log("Register account data", data);
   const options = {
     method: "POST",
     headers: {

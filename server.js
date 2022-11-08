@@ -1,6 +1,8 @@
 const express = require("express");
 const Datastore = require("nedb");
 const requestify = require("requestify");
+const mongoose = require("mongoose")
+require('dotenv/config')
 
 // Request to imdb api
 const url = `https://caching.graphql.imdb.com/?operationName=comingSoonMovieQuery&variables=%7B%22movieReleasingOnOrAfter%22%3A%222022-10-26%22%2C%22movieViewerLocation%22%3A%7B%22latLong%22%3A%7B%22lat%22%3A%2245.63%22%2C%22long%22%3A%2225.58%22%7D%2C%22radiusInMeters%22%3A80467%7D%2C%22regionOverride%22%3A%22GB%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22sha256Hash%22%3A%2285a63f89df9b1368af9cbbd5a03ececaf2b34a175dd653119e1cd09c9cfda637%22%2C%22version%22%3A1%7D%7D`;
@@ -23,10 +25,27 @@ app.listen(process.env.PORT || portNumber, () =>
 app.use(express.static("public"));
 app.use(express.json({ limit: "1mb" }));
 
-const database = new Datastore("database.db");
-const users = new Datastore("users.db");
-users.loadDatabase();
-database.loadDatabase();
+// const database = new Datastore("database.db");
+// const users = new Datastore("users.db");
+// users.loadDatabase();
+// database.loadDatabase();
+
+// Connect to mongoDB with mongoose
+mongoose.connect(process.env.MONGO_URL, () => {
+  console.log('connected to DB!')
+})
+
+const Schema = mongoose.Schema;
+const userSchema = new Schema({
+  name: String,
+  email: String,
+  password: String,
+  favList: [],
+  time: Number
+}, { collection: 'users' })
+users = mongoose.model('users', userSchema)
+
+const db = mongoose.connection;
 
 app.get("/imdb", (request, response) => {
   console.log("GET /IMDB from client side");
@@ -53,7 +72,8 @@ app.post("/register", (req, res) => {
       console.log("request data: ", reqData);
       if (data.length < 1) {
         console.log("Inserting data to users.db");
-        users.insert(reqData);
+        // users.insert(reqData);
+        db.collection('users').insertOne(reqData);
         res.json({
           status: 200,
           message: "Registration successful",
@@ -74,7 +94,7 @@ app.post("/register", (req, res) => {
 app.post("/favList", (req, res) => {
   console.log("POST /favList from client side");
   console.log(req.body);
-  users.loadDatabase();
+  // users.loadDatabase();
   users.find({ email: req.body.user }, (err, data) => {
     console.log(data);
     var constcurrentFavList = data[0].favList;
@@ -96,7 +116,7 @@ app.post("/fav", async (req, res) => {
   console.log(req.body);
   const reqData = req.body;
 
-  users.loadDatabase();
+  // users.loadDatabase();
   users.find({ email: reqData.user }, (err, data) => {
     console.log(data);
     var isItemIncluded =
@@ -124,13 +144,13 @@ app.post("/fav", async (req, res) => {
       if (upsert) console.log("upsert: ", upsert);
     }
   );
-  users.loadDatabase();
+  // users.loadDatabase();
 });
 
 app.post("/deleteItem", async (req, res) => {
   console.log("POST /deleteItem from client side");
   console.log(req.body);
-  users.loadDatabase();
+  // users.loadDatabase();
   users.find({ email: req.body.user }, async (err, data) => {
     const favList = data[0].favList;
     const itemToDelete = favList.filter((el) => el.includes(req.body.delete));
@@ -138,14 +158,14 @@ app.post("/deleteItem", async (req, res) => {
       { email: req.body.user },
       { $pull: { favList: itemToDelete[0] } },
       {},
-      function () {}
+      function () { }
     );
     res.json({
       status: 200,
       message: "Item deleted",
     });
   });
-  users.loadDatabase();
+  // users.loadDatabase();
 });
 
 app.post("/login", (req, res) => {
