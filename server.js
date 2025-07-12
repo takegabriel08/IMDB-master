@@ -3,7 +3,7 @@ const Datastore = require("nedb");
 const requestify = require("requestify");
 
 // Request to imdb api
-const url = `https://caching.graphql.imdb.com/?operationName=comingSoonMovieQuery&variables=%7B%22locale%22%3A%22en-US%22%2C%22movieReleasingOnOrAfter%22%3A%222025-05-01%22%2C%22movieViewerLocation%22%3A%7B%22postalCode%22%3A%7B%22country%22%3A%22US%22%2C%22postalCode%22%3A%2298121%22%7D%2C%22radiusInMeters%22%3A80467%7D%2C%22regionOverride%22%3A%22US%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22sha256Hash%22%3A%22b5fb0652645596d83b1d3ce238deebfe855b49905cb6b39a5440769cffe4d3b8%22%2C%22version%22%3A1%7D%7D`;
+const url = `https://api.graphql.imdb.com/?operationName=comingSoonMovieQuery&variables=%7B%22locale%22%3A%22en-US%22%2C%22movieReleasingOnOrAfter%22%3A%222025-07-12%22%2C%22movieViewerLocation%22%3A%7B%22latLong%22%3A%7B%22lat%22%3A%2245.63%22%2C%22long%22%3A%2225.58%22%7D%2C%22radiusInMeters%22%3A80467%7D%2C%22regionOverride%22%3A%22US%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22sha256Hash%22%3A%2279d80a2eb2d13572f8408ce87162cb52fbeee80dd98bddfe272d71dda1ff07f5%22%2C%22version%22%3A1%7D%7D`;
 const options = {
   headers: {
     "content-type": "application/json",
@@ -12,7 +12,7 @@ const options = {
 };
 requestify.get(url, options).then(function (response) {
   let data = response.getBody();
-  // console.log(data);
+  console.log(data);
 });
 
 const app = express();
@@ -49,7 +49,7 @@ app.post("/register", (req, res) => {
     reqData.favList = [];
     console.log("post body", req.body);
     users.find({ email: req.body.email }, (err, data) => {
-      console.log("Here is the data ", data, data.length);
+      console.log("Here is the data ", data,);
       console.log("request data: ", reqData);
       if (data.length < 1) {
         console.log("Inserting data to users.db");
